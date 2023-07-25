@@ -1,12 +1,16 @@
 #!/usr/bin/python3
-# starts flask
+"""
+This module defines a Flask web application.
+"""
 from flask import Flask
 
 app = Flask(__name__)
 
-# Define the route for "/"
 @app.route('/', strict_slashes=False)
 def hello_hbnb():
+    """
+    Display "Hello HBNB!" on the root path.
+    """
     return 'Hello HBNB!'
 
 if __name__ == '__main__':
