@@ -1,62 +1,53 @@
 #!/usr/bin/python3
-# starts flask with c thing
+"""Start a Flask web application."""
+
 from flask import Flask, abort, render_template
 
 app = Flask(__name__)
 
 
 @app.route('/')
-def hello_world():
-    # hello
+def hello_hbnb():
+    """Route to display 'Hello HBNB!'."""
     return 'Hello HBNB!'
 
 
 @app.route('/hbnb')
-def hbnb():
-    # hbnb
+def display_hbnb():
+    """Route to display 'HBNB'."""
     return 'HBNB'
 
 
 @app.route('/c/<text>')
-def ctext(text):
-    # c with text
-    return 'C ' + text.replace("_", ' ')
+def c_text(text):
+    """Route to display 'C ', followed by the value of the 'text' variable."""
+    return 'C {}'.format(text.replace("_", " "))
 
 
 @app.route('/python/')
 @app.route('/python/<text>')
-def ptext(text='is cool'):
-    # python text
-    return 'Python {}'.format(text.replace("_", ' '))
+def python_text(text="is cool"):
+    """Route to display 'Python ', followed by the value of the 'text' variable."""
+    return 'Python {}'.format(text.replace("_", " "))
 
 
-@app.route('/number/<n>')
-def ntext(n):
-    # number
-    try:
-        return '{} is a number'.format(int(n))
-    except:
-        abort(404)
+@app.route('/number/<int:n>')
+def number(n):
+    """Route to display 'n is a number' only if n is an integer."""
+    return '{} is a number'.format(n)
 
 
-@app.route('/number_template/<n>')
-def temptext(n):
-    # number with jinja2
-    try:
-        return render_template('5-number.html', n=int(n))
-    except:
-        abort(404)
+@app.route('/number_template/<int:n>')
+def number_template(n):
+    """Route to display an HTML page only if n is an integer."""
+    return render_template('6-number_template.html', n=n)
 
 
-@app.route('/number_odd_or_even/<n>')
-def evenoddtext(n):
-    # even odd text
-    try:
-        return render_template('6-number_odd_or_even.html', n=int(n))
-    except:
-        abort(404)
+@app.route('/number_odd_or_even/<int:n>')
+def number_odd_or_even(n):
+    """Route to display an HTML page only if n is an integer, showing if it's even or odd."""
+    return render_template('6-number_odd_or_even.html', n=n)
 
 
 if __name__ == "__main__":
-    app.url_map.strict_slashes = False
     app.run(host="0.0.0.0", port=5000)
