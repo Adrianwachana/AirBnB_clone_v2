@@ -1,35 +1,31 @@
 #!/usr/bin/python3
-"""
-Starts a Flask web application
+"""Start web application with two routings
 """
 
-from flask import Flask, render_template
 from models import storage
 from models.state import State
-
+from flask import Flask, render_template
 app = Flask(__name__)
 
 
-@app.route('/states_list', strict_slashes=False)
+@app.route('/states_list')
 def states_list():
+    """Render template with states
     """
-    Display a HTML page: (inside the tag BODY)
-    H1 tag: “States”
-    UL tag: with the list of all State objects present in DBStorage sorted by name (A->Z)
-    LI tag: description of one State: <state.id>: <B><state.name></B>
-    Nested UL tag: with the list of City objects linked to the State sorted by name (A->Z)
-    LI tag: description of one City: <city.id>: <B><city.name></B>
-    """
-    states = storage.all(State).values()
-    return render_template('7-states_list.html', states=states)
+    path = '7-states_list.html'
+    states = storage.all(State)
+    # sort State object alphabetically by name
+    sorted_states = sorted(states.values(), key=lambda state: state.name)
+    return render_template(path, sorted_states=sorted_states)
 
 
 @app.teardown_appcontext
-def close_db(error):
-    """Closes the database again at the end of the request."""
+def app_teardown(arg=None):
+    """Clean-up session
+    """
     storage.close()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
+    app.url_map.strict_slashes = False
     app.run(host='0.0.0.0', port=5000)
-

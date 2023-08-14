@@ -1,19 +1,20 @@
 #!/usr/bin/python3
-'''
-    Define the class City.
-'''
+"""This is the city class"""
 from models.base_model import BaseModel, Base
-from models.state import State
-from sqlalchemy import Column, String, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, ForeignKey, MetaData
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, backref
 
 
 class City(BaseModel, Base):
-    '''
-        Define the class City that inherits from BaseModel.
-    '''
-    __tablename__ = "cities"
-    state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
+    """This is the class for City
+    Attributes:
+        state_id: The state id
+        name: input name
+    """
+    __tablename__ = 'cities'
     name = Column(String(128), nullable=False)
-    places = relationship("Place", backref="cities",
-                          cascade="all, delete-orphan")
+    state_id = Column(String(60), ForeignKey("states.id"), nullable=False)
+    places = relationship("Place",
+                          backref="cities",
+                          cascade="all, delete, delete-orphan")

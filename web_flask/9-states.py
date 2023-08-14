@@ -1,29 +1,34 @@
 #!/usr/bin/python3
-# list of states
+"""Importing Flask to run the web app"""
 from flask import Flask, render_template
 from models import storage
+from models.state import State
+
+
 app = Flask(__name__)
 
 
-@app.route('/states')
-def stateList():
-    # lists states in html
-    return render_template('9-states.html',
-                           storage=storage.all('State'), stObj=None)
-
-
-@app.route('/states/<id>')
-def cityStateList(id):
-    # lists states in html
-    stObj = storage.all('State').get('State.{}'.format(id))
-    return render_template('9-states.html', stObj=stObj, storage=None)
-
-
 @app.teardown_appcontext
-def closer(exception):
+def close(self):
+    """ Method to close the session """
     storage.close()
 
 
-if __name__ == "__main__":
-    app.url_map.strict_slashes = False
-    app.run(host="0.0.0.0", port=5000)
+@app.route('/states', strict_slashes=False)
+def state():
+    """Displays a html page with states"""
+    states = storage.all(State)
+    return render_template('9-states.html', states=states, mode='all')
+
+
+@app.route('/states/<id>', strict_slashes=False)
+def state_by_id(id):
+    """Displays a html page with citys of that state"""
+    for state in storage.all(State).values():
+        if state.id == id:
+            return render_template('9-states.html', states=state, mode='id')
+    return render_template('9-states.html', states=state, mode='none')
+
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port="5000")
